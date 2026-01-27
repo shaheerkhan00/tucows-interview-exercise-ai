@@ -189,7 +189,7 @@ def create_chunks_with_metadata(docs: List[Dict]) -> List[Dict]:
                     chunks.append({
                         "text": chunk,
                         "source": filename,
-                        "paragraph": para_num,  # Paragraph number for DOCX
+                        "paragraph": para_num,  
                         "chunk_index": chunk_idx,
                         "doc_type": "docx"
                     })

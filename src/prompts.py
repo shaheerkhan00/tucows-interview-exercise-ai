@@ -6,7 +6,6 @@ class PromptManager:
     MCP-compliant prompt manager for a RAG-based OpenAI application.
     """
 
-    # System behavior contract (single authoritative instruction set)
     SYSTEM_PROMPT = """You are a technical support assistant for a domain registrar company.
 
 Your responsibilities:
@@ -24,7 +23,6 @@ If the documents do not contain the answer, state this explicitly.
 Do not include reasoning or any text outside the JSON response.
 """
 
-    # Deterministic escalation policy (machine-readable)
     ESCALATION_POLICY = {
         "escalate_to_abuse_team": [
             "spam", "phishing", "malware", "abuse", "content violations"
@@ -46,7 +44,6 @@ Do not include reasoning or any text outside the JSON response.
         ]
     }
 
-    # Few-shot examples demonstrating behavior (Formatted as JSON Strings)
     FEW_SHOT_EXAMPLES = [
         {
             "role": "user",

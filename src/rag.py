@@ -137,7 +137,6 @@ def test_search():
                 source = result.get("source", "Unknown")
                 page = result.get("page")  # FIX: Check if page exists
                 
-                # FIX: Better handling of page display
                 if page:
                     page_str = f", Page {page}"
                 else:
