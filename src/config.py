@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     """
     
     # LLM Provider Switch
-    LLM_PROVIDER: str = "groq"  # "groq" or "openai"
+    LLM_PROVIDER: str = "openai"  # "groq" or "openai"
     
     # API Keys
     GROQ_API_KEY: str | None = None

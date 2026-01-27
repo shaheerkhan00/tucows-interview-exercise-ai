@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, validator
-from typing import List, Literal,literal
+from typing import List, Literal
 
 class TicketRequest(BaseModel):
     """a structured model for ticket creation requests"""

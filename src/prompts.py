@@ -26,14 +26,14 @@ class PromptManager:
              Document 1: domain_suspension_policy.pdf, Page 2
              Domains are suspended when WHOIS information is missing or invalid. To reactivate, update your WHOIS details within 15 days and contact support.
 
-             Query: My domain was suspended. How do I fix it?"""
+             Query: My domain was suspended without any notice. How do I fix it?"""
         },
         {
             "role": "assistant",
             "content": """{
              "answer": "Your domain was likely suspended due to missing or invalid WHOIS information. To reactivate it, you need to update your WHOIS details within 15 days and contact support.",
              "references": ["domain_suspension_policy.pdf, Page 2"],
-            "action_required": "none"
+            "action_required": "escalate_to_abuse"
                  }"""
         },
         {
@@ -64,7 +64,7 @@ class PromptManager:
         {{
             "answer":"Your detailed answer based on the context (2-4 sentences)",
             "references":["list of reference documents with page/section numbers"],
-            "action_required":"one of [none, escalate_to_abuse_team, escalate_to_billing_team, escalate_to_technical_support]"
+            "action_required":"one of [none, escalate_to_abuse, escalate_to_billing, escalate_to_technical]"
             
         }}
         IMPORTANT REMINDERS:
