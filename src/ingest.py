@@ -5,7 +5,7 @@ import numpy as np
 from pathlib import Path
 from sentence_transformers import SentenceTransformer
 from typing import List, Dict
-from config import get_settings
+from src.config import get_settings
 
 settings = get_settings()
 
