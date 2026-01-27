@@ -1,0 +1,15 @@
+# Ignore git files
+.git/
+.gitignore
+
+# Ignore Python cache and local environments
+__pycache__/
+venv/
+.env
+
+# Ignore the heavy Vector Store (we want to build this fresh or mount it)
+data/vector_store/
+
+# Ignore IDE settings
+.vscode/
+.idea/

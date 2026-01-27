@@ -1,0 +1,28 @@
+ESCALATION PROCEDURES
+
+Level 1: General Support
+- Response time: 4 hours
+- Handles: Account questions, billing inquiries, basic technical issues
+- Contact: support@example.com
+
+Level 2: Technical Team
+- Response time: 8 hours  
+- Handles: DNS issues, email problems, SSL certificates, domain transfers
+- Escalate when: Technical issue requires system access or configuration
+
+Level 3: Abuse Team
+- Response time: 24 hours
+- Handles: Spam reports, phishing complaints, malware, security issues
+- Escalate when: Domain involved in abuse, legal complaints, security threats
+
+Level 4: Billing Department
+- Response time: 4 hours
+- Handles: Payment issues, refunds, billing disputes, invoice questions
+- Contact: billing@example.com
+
+When to Escalate:
+- Customer requests manager or supervisor
+- Issue unresolved after 2 attempts
+- Requires system-level access
+- Legal or compliance matter
+- Potential security threat

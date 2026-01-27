@@ -18,10 +18,10 @@ env/
 *.swp
 *.swo
 
-# Data
+
 data/vector_store/
-data/docs/*.pdf
-data/docs/*.txt
+
+
 
 # Tests
 .pytest_cache/

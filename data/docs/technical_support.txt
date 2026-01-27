@@ -1,0 +1,30 @@
+TECHNICAL SUPPORT GUIDE
+
+DNS Configuration:
+- DNS changes can take 24-48 hours to propagate globally
+- Use our nameservers: ns1.example.com and ns2.example.com
+- Common DNS records: A (IPv4), AAAA (IPv6), CNAME (alias), MX (mail), TXT (verification)
+
+Email Setup:
+- Configure email clients with:
+  - Incoming: mail.yourdomain.com (IMAP port 993, POP3 port 995)
+  - Outgoing: smtp.yourdomain.com (port 587 with STARTTLS)
+- Use your full email address as username
+
+SSL Certificates:
+- Free SSL certificates available for all domains
+- Auto-renewal enabled by default
+- Installation takes 10-15 minutes
+- Verify at https://www.ssllabs.com/ssltest/
+
+Domain Transfers:
+- Unlock your domain in the control panel
+- Obtain authorization (EPP) code
+- Initiate transfer at new registrar
+- Approve transfer email within 5 days
+- Transfer completes in 5-7 days
+
+Common Issues:
+- Site not loading: Check DNS settings and nameservers
+- Email not working: Verify MX records and email client settings
+- SSL errors: Ensure certificate is installed and not expired

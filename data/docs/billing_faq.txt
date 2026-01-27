@@ -1,0 +1,19 @@
+BILLING FREQUENTLY ASKED QUESTIONS
+
+Q: What payment methods do you accept?
+A: We accept credit cards (Visa, Mastercard, Amex), PayPal, and bank transfers for accounts over $500.
+
+Q: When will I be charged for renewal?
+A: Domain renewals are charged 30 days before expiration. You will receive email reminders at 60, 30, and 7 days before renewal.
+
+Q: How do I request a refund?
+A: Refund requests must be submitted within 30 days of purchase. Contact billing@support.com with your order number. Refunds are processed within 5-7 business days.
+
+Q: What happens if my payment fails?
+A: If payment fails, we will retry 3 times over 7 days. After that, your services may be suspended. Update your payment method in the billing portal.
+
+Q: Can I change my billing cycle?
+A: Yes, contact our billing team to switch between monthly, quarterly, or annual billing. Changes take effect at the next renewal.
+
+Q: How do I access my invoices?
+A: Log into your account portal and navigate to Billing > Invoices. All invoices are available for download as PDF.

@@ -1,0 +1,34 @@
+DOMAIN SUSPENSION POLICY
+
+Section 1: Suspension Reasons
+Domains may be suspended for the following reasons:
+1. Missing or invalid WHOIS information
+2. Non-payment of renewal fees
+3. Abuse complaints (spam, phishing, malware)
+4. Legal orders or disputes
+5. Violation of acceptable use policy
+
+Section 2: WHOIS Requirements
+All domain registrants must maintain accurate WHOIS contact information including:
+- Full legal name
+- Valid email address
+- Current mailing address
+- Working phone number
+
+Section 3: Reactivation Process
+To reactivate a suspended domain:
+1. Update your WHOIS information with accurate details
+2. Resolve any outstanding billing issues
+3. Contact support with your domain name
+4. Wait 24-48 hours for verification
+5. Domain will be reactivated once verified
+
+Important: You must update WHOIS within 15 days of suspension notice.
+
+Section 4: Abuse-Related Suspensions
+These suspensions also happen without any prior notice.
+Domains suspended for abuse require:
+- Escalation to abuse team
+- Investigation (3-5 business days)
+- Proof of remediation
+- May require additional verification

@@ -130,8 +130,8 @@ async def resolve_ticket(request: TicketRequest) -> TicketResponse:
             )
         
         # Check relevance score (cross-encoder typically scores -10 to +10)
-        # If best match is below threshold, likely not relevant
-        if results[0]["relevance_score"] < -2.0:
+        
+        if results[0]["relevance_score"] < -4.0:
             return TicketResponse(
                 answer="I couldn't find sufficiently relevant information for your specific query. Please contact support for personalized assistance.",
                 references=[],
@@ -159,16 +159,9 @@ async def resolve_ticket(request: TicketRequest) -> TicketResponse:
         )
 
 
-@app.get(
-    "/health",
-    summary="Health Check",
-    description="Check if the API and its dependencies are running correctly"
-)
+@app.get("/health",include_in_schema=False)
 async def health() -> Dict:
-    """
-    Health check endpoint.
-    Returns status and basic service information.
-    """
+    """Health check endpoint"""
     is_healthy = (
         rag_service is not None and
         llm_service is not None and
@@ -177,7 +170,6 @@ async def health() -> Dict:
     
     return {
         "status": "healthy" if is_healthy else "unhealthy",
-        "llm_provider": settings.LLM_PROVIDER,
         "llm_model": llm_service.model if llm_service else "not initialized",
         "indexed_chunks": rag_service.index.ntotal if (rag_service and rag_service.index) else 0,
         "services": {
@@ -187,20 +179,13 @@ async def health() -> Dict:
     }
 
 
-@app.get(
-    "/stats",
-    summary="System Statistics",
-    description="Get detailed statistics about the knowledge base and configuration"
-)
+@app.get("/stats",include_in_schema=False)
 async def stats() -> Dict:
-    """
-    Statistics endpoint.
-    Returns detailed information about indexed documents and configuration.
-    """
+    """Statistics endpoint"""
     if not rag_service or not rag_service.index:
         return {
             "error": "Vector store not initialized",
-            "hint": "Run: python src/ingest.py"
+            "hint": "Run: python -m src.ingest"
         }
     
     # Count unique documents
@@ -213,7 +198,6 @@ async def stats() -> Dict:
         "total_documents": len(sources),
         "document_list": sorted(list(sources)),
         "configuration": {
-            "llm_provider": settings.LLM_PROVIDER,
             "llm_model": llm_service.model if llm_service else None,
             "embedding_model": settings.EMBEDDING_MODEL,
             "reranker_model": settings.RERANKER_MODEL,
@@ -223,8 +207,6 @@ async def stats() -> Dict:
             "top_k_rerank": settings.TOP_K_RERANK
         }
     }
-
-
 @app.get("/", summary="Root", description="API root endpoint with basic information")
 async def root() -> Dict:
     """Root endpoint with API information"""

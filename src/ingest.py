@@ -101,28 +101,28 @@ def load_txt(path: Path) -> Dict:
 
 def load_docx(path: Path) -> Dict:
     """
-    Load a DOCX file and return its content and metadata.
+    Load a DOCX file and return its content with paragraph tracking.
     
     Args:
         path (Path): path to the DOCX file
     Returns:
-        Dict: dictionary with 'filename', 'type' and 'text'
+        Dict: dictionary with 'filename', 'type' and 'paragraphs'
     """
     doc = Document(path)
     
-    # Extract all paragraphs
+    # Extract paragraphs with their index
     paragraphs = []
-    for para in doc.paragraphs:
+    for idx, para in enumerate(doc.paragraphs, 1):
         if para.text.strip():
-            paragraphs.append(para.text)
-    
-    # Join paragraphs with newlines
-    content = "\n\n".join(paragraphs)
+            paragraphs.append({
+                "paragraph": idx,
+                "text": para.text
+            })
     
     return {
         "filename": path.name,
         "type": "docx",
-        "text": content
+        "paragraphs": paragraphs  
     }
 
 
@@ -155,12 +155,7 @@ def chunk_text(text: str, chunk_size: int, overlap: int) -> List[str]:
 def create_chunks_with_metadata(docs: List[Dict]) -> List[Dict]:
     """
     Create text chunks with metadata from documents.
-    Supports PDF, TXT, and DOCX files.
-    
-    Args:
-        docs (List[Dict]): list of documents
-    Returns:
-        List[Dict]: list of chunks with metadata
+    Supports PDF (with pages), TXT, and DOCX (with paragraphs).
     """
     chunks = []
     for doc in docs:
@@ -171,29 +166,43 @@ def create_chunks_with_metadata(docs: List[Dict]) -> List[Dict]:
                 page_num = page_info["page"]
                 page_text = page_info["text"]
                 
-                # Create page chunks
                 page_chunks = chunk_text(page_text, settings.CHUNK_SIZE, settings.CHUNK_OVERLAP)
                 
-                # Add metadata to each chunk
                 for chunk_idx, chunk in enumerate(page_chunks):
                     chunks.append({
                         "text": chunk,
                         "source": filename,
-                        "page": page_num,
+                        "page": page_num,  # Page number for PDFs
                         "chunk_index": chunk_idx,
                         "doc_type": "pdf"
                     })
         
-        elif doc["type"] in ["txt", "docx"]:  # Handle both TXT and DOCX
+        elif doc["type"] == "docx":
+            # Process each paragraph separately for better source attribution
+            for para_info in doc["paragraphs"]:
+                para_num = para_info["paragraph"]
+                para_text = para_info["text"]
+                
+                para_chunks = chunk_text(para_text, settings.CHUNK_SIZE, settings.CHUNK_OVERLAP)
+                
+                for chunk_idx, chunk in enumerate(para_chunks):
+                    chunks.append({
+                        "text": chunk,
+                        "source": filename,
+                        "paragraph": para_num,  # Paragraph number for DOCX
+                        "chunk_index": chunk_idx,
+                        "doc_type": "docx"
+                    })
+        
+        elif doc["type"] == "txt":
             text_chunks = chunk_text(doc["text"], settings.CHUNK_SIZE, settings.CHUNK_OVERLAP)
             
-            # Add metadata to each chunk
             for chunk_idx, chunk in enumerate(text_chunks):
                 chunks.append({
                     "text": chunk,
                     "source": filename,
                     "chunk_index": chunk_idx,
-                    "doc_type": doc["type"]
+                    "doc_type": "txt"
                 })
     
     return chunks

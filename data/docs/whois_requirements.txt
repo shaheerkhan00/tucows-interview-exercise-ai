@@ -1,0 +1,36 @@
+WHOIS INFORMATION REQUIREMENTS
+
+ICANN Requirements:
+All domain registrants must provide accurate WHOIS information as mandated by ICANN policy. Failure to maintain accurate WHOIS can result in domain suspension.
+
+Required Information:
+1. Registrant Name (individual or organization)
+2. Registrant Email (must be monitored)
+3. Registrant Phone (must be reachable)
+4. Registrant Address (complete mailing address)
+5. Administrative Contact (can be same as registrant)
+6. Technical Contact (can be same as registrant)
+
+Privacy Protection:
+- WHOIS privacy service available for eligible TLDs
+- Hides personal information from public WHOIS
+- Costs $5/year per domain
+- Not available for .us, .ca, and some country codes
+
+Updating WHOIS:
+- Log into account portal
+- Navigate to Domain Management > WHOIS
+- Update required fields
+- Changes take effect within 24 hours
+- You will receive verification email
+
+Verification Process:
+- Email verification required within 15 days
+- Click link in verification email
+- Failure to verify results in suspension
+- Re-send verification from domain management
+
+Common Issues:
+- Email bouncing: Update to valid email address
+- Phone invalid: Must include country code and be reachable
+- Address incomplete: Include street, city, state/province, postal code, country

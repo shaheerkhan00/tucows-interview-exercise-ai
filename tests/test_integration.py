@@ -12,7 +12,7 @@ class TestHealthEndpoints:
         
         data = response.json()
         assert "status" in data
-        assert "llm_provider" in data
+        # Removed llm_provider check since we don't have it anymore
         assert "indexed_chunks" in data
     
     def test_stats_endpoint(self, client):

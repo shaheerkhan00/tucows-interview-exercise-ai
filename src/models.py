@@ -41,7 +41,10 @@ class TicketResponse(BaseModel):
         "none",
         "escalate_to_abuse_team",
         "escalate_to_billing",
-        "escalate_to_technical"
+        "escalate_to_technical",
+        "escalate_to_legal",
+        "escalate_to_privacy",
+        "escalate_to_security"
     ] = Field(
         ...,
         description="Required action based on the ticket analysis"

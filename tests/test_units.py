@@ -10,7 +10,8 @@ class TestConfiguration:
     def test_config_loads(self):
         """Test that configuration loads from environment"""
         settings = get_settings()
-        assert settings.LLM_PROVIDER in ["groq", "openai"]
+        # Remove check for LLM_PROVIDER
+        assert settings.OPENAI_API_KEY is not None  # Changed
         assert settings.CHUNK_SIZE > 0
         assert settings.CHUNK_OVERLAP >= 0
         assert settings.TOP_K_RERANK > 0
@@ -18,6 +19,7 @@ class TestConfiguration:
     def test_config_validation(self):
         """Test configuration has required fields"""
         settings = get_settings()
+        assert hasattr(settings, "OPENAI_MODEL")  # Changed
         assert hasattr(settings, "EMBEDDING_MODEL")
         assert hasattr(settings, "RERANKER_MODEL")
 
