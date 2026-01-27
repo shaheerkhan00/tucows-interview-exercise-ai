@@ -145,3 +145,73 @@ def create_chunks_with_metadata(docs: List[Dict])->List[Dict]:
                 })
     return chunks
       
+def ingest_and_index():
+    """ 
+    Main ingestion pipeline:
+    1.Load documents
+    2.Chunk documents with metadata
+    3.generate embeddings
+    4.Build FAISS index
+    5.Save index and metadata
+    """
+    print("Document ingestion Pipeline initiated")
+    
+    print("Loading Documents...")
+    docs = load_documents("data/docs")
+    if not docs:
+        print("No documents found for ingestion. Exiting pipeline.")
+        return
+    print(f"Loaded {len(docs)} documents.")
+    print("Creating Chunks with Metadata...")
+    chunks = create_chunks_with_metadata(docs)
+    print(f"Created {len(chunks)} chunks.")
+    if not chunks:
+        print("No chunks created from documents. Exiting pipeline.")
+        return
+    print("Generating Embeddings...using model:",settings.EMBEDDING_MODEL)
+    embedder = SentenceTransformer(settings.EMBEDDING_MODEL)
+    texts = [chunk["text"] for chunk in chunks]
+    embeddings = embedder.encode(texts,show_progress_bar=True,batch_size=32)
+    embeddings = np.array(embeddings).astype("float32")
+    faiss.normalize_L2(embeddings)
+    print(f"Generated {len(embeddings)} embeddings.")
+    print("Building FAISS Index...")
+    dimension = embeddings.shape[1]
+    index = faiss.IndexFlatIP(dimension)
+    index.add(embeddings)
+    print(f"built index with dimension: {dimension}.")
+    print("Saving Index and Metadata to vector store")
+    
+    #create directry if notexsist
+    store_path=Path("data/vector_store")
+    store_path.mkdir(parents=True,exist_ok=True)
+    
+    #store faiss index
+    index_file = store_path / "index.faiss"
+    faiss.write_index(index,str(index_file))
+    
+    #store metadata
+    metadata_file = store_path / "metadata.pkl"
+    with open(metadata_file,"wb") as f:
+        pickle.dump(chunks,f)
+    print("Ingestion and Indexing completed successfully.")
+    print(f"Saved index to {index_file}")
+    print(f"Saved metadata to {metadata_file}")
+    print(f"Total documents: {len(docs)}, Total chunks: {len(chunks)}, Total embeddings: {len(embeddings)}, Index size: {index.ntotal} vectors, Dimension: {dimension}")
+    
+    print("Sample Chunks:")
+    for i, chunk in enumerate(chunks[:3],1):
+        if "page" in chunk["metadata"]:
+            source = f"{chunk['metadata']['source']}, Page {chunk['metadata']['page']}"
+        else:
+            source = chunk['metadata']['source']
+        print(f"Chunk {i}: Source: {source}, Text Preview: {chunk['text'][:100]}...")
+
+
+if __name__=="__main__":
+    ingest_and_index()
+               
+    
+    
+    
+    
