@@ -7,8 +7,6 @@ services:
       - "8000:8000"
     env_file:
       - .env
-    environment:
-      - LLM_PROVIDER=openai  # Use OpenAI in production
     volumes:
       - ./data:/app/data
     restart: unless-stopped

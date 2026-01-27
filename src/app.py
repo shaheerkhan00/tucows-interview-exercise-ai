@@ -23,36 +23,35 @@ async def lifespan(app: FastAPI):
     """
     global rag_service, llm_service
     
-    print("\n" + "="*60)
-    print("KNOWLEDGE ASSISTANT - STARTING UP")
-    print("="*60)
+    
+    print("KNOWLEDGE ASSISTANT - STARTING UP...........")
+    
     
     # Initialize RAG service
-    print("\n[1/2] Initializing RAG Service...")
+    print("Initializing RAG Service...")
     rag_service = RAGService()
     
     # Check if vector store is ready
     if not rag_service.index or rag_service.index.ntotal == 0:
-        print("\n⚠ WARNING: Vector store is empty!")
-        print("   Run: python src/ingest.py")
-        print("   Then restart the API server.\n")
+        print(" WARNING: Vector store is empty!")
+        print("Run: python src/ingest.py")
+        print("Then restart the API server.")
     else:
-        print(f"✓ Vector store ready with {rag_service.index.ntotal} chunks")
+        print(f"Vector store ready with {rag_service.index.ntotal} chunks")
     
     # Initialize LLM service
-    print("\n[2/2] Initializing LLM Service...")
+    print("Initializing LLM Service...")
     llm_service = LLMService()
     
-    print("\n" + "="*60)
-    print("✓ KNOWLEDGE ASSISTANT READY")
-    print(f"  Provider: {settings.LLM_PROVIDER}")
+    
+    print("KNOWLEDGE ASSISTANT READY")
     print(f"  Model: {llm_service.model}")
     print(f"  Indexed chunks: {rag_service.index.ntotal if rag_service.index else 0}")
-    print("="*60 + "\n")
+    
     
     yield
     
-    print("\nShutting down Knowledge Assistant...")
+    print("Shutting down Knowledge Assistant...")
 
 
 # Create FastAPI app

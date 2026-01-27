@@ -127,7 +127,7 @@ def test_search():
     ]
     
     for query in test_queries:
-        print(f"\nQuery: {query}")
+        print(f"Query: {query}")
         results = rag.search(query)
          
         if results:

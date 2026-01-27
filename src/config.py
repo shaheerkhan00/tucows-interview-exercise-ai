@@ -5,18 +5,12 @@ from functools import lru_cache
 class Settings(BaseSettings):
     """
     Application settings with environment-based configuration.
-    Supports switching between Groq (fast development) and OpenAI (reliable production).
     """
     
-    # LLM Provider Switch
-    LLM_PROVIDER: str = "openai"  # "groq" or "openai"
+    # API Key
+    OPENAI_API_KEY: str
     
-    # API Keys
-    GROQ_API_KEY: str | None = None
-    OPENAI_API_KEY: str | None = None
-    
-    # Model Names
-    GROQ_MODEL: str = "llama-3.1-70b-versatile"
+    # Model Name
     OPENAI_MODEL: str = "gpt-4-turbo-preview"
     
     # Embedding Models
