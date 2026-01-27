@@ -37,6 +37,7 @@ def load_documents(directory:str)->List[Dict]:
         except Exception as e:
             print(f"Error loading {txt_file.name}: {e}")
     return docs
+
 def load_pdf(path:Path)->Dict:
     """Load a pdf file and return its text content and metadata
     Args:
@@ -57,7 +58,7 @@ def load_pdf(path:Path)->Dict:
     return {
         "filename":path.name,
         "type":"pdf",
-        "content":pages
+        "pages":pages  # FIX: Changed from "content" to "pages" for consistency
     }
     
 def load_txt(path:Path) -> Dict:
@@ -100,8 +101,6 @@ def chunk_text(text:str,chunk_size:int,overlap:int)->List[str]:
         start += chunk_size - overlap
     return chunks
     
-        
-    
 def create_chunks_with_metadata(docs: List[Dict])->List[Dict]:
     """
     Create text chunks with metadata from documents
@@ -123,25 +122,24 @@ def create_chunks_with_metadata(docs: List[Dict])->List[Dict]:
                 #create pagechunks
                 page_chunks = chunk_text(page_text,settings.CHUNK_SIZE,settings.CHUNK_OVERLAP)
                 
-                #add metadata to each chunk
+                # FIX: Flattened metadata structure (removed nested "metadata" dict)
                 for chunk_idx,chunk in enumerate(page_chunks):
                     chunks.append({
                         "text":chunk,
-                        "metadata":{
-                            "source":filename,
-                            "page":page_num,
-                            "chunk_index":chunk_idx
-                        }
+                        "source":filename,  # FIX: Moved to top level
+                        "page":page_num,  # FIX: Moved to top level
+                        "chunk_index":chunk_idx,
+                        "doc_type":"pdf"  # FIX: Added doc_type field
                     })
         else:
             text_chunks = chunk_text(doc["text"],settings.CHUNK_SIZE,settings.CHUNK_OVERLAP)
+            # FIX: Flattened metadata structure for txt files too
             for chunk_idx,chunk in enumerate(text_chunks):
                 chunks.append({
                     "text":chunk,
-                    "metadata":{
-                        "source":filename,
-                        "chunk_index":chunk_idx
-                    }
+                    "source":filename,  # FIX: Moved to top level
+                    "chunk_index":chunk_idx,
+                    "doc_type":"txt"  # FIX: Added doc_type field
                 })
     return chunks
       
@@ -201,17 +199,13 @@ def ingest_and_index():
     
     print("Sample Chunks:")
     for i, chunk in enumerate(chunks[:3],1):
-        if "page" in chunk["metadata"]:
-            source = f"{chunk['metadata']['source']}, Page {chunk['metadata']['page']}"
+        # FIX: Updated to use flattened structure
+        if "page" in chunk:
+            source = f"{chunk['source']}, Page {chunk['page']}"
         else:
-            source = chunk['metadata']['source']
+            source = chunk['source']
         print(f"Chunk {i}: Source: {source}, Text Preview: {chunk['text'][:100]}...")
 
 
 if __name__=="__main__":
     ingest_and_index()
-               
-    
-    
-    
-    

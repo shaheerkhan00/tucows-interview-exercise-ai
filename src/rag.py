@@ -103,15 +103,16 @@ class RAGService:
         if not results:
             return "No relevant information found in the documents."
         formatted_chunks = []
-        for i,doc in enumerate(results):
+        for i,doc in enumerate(results,1):
             source = doc.get("source","Unknown")
             text = doc.get("text","")
             
-            if doc.get("page") is not None:
-                source_ref=  f"{source}, Page {doc['page']}"
+            # FIX: Check for page field (flattened structure)
+            if "page" in doc:
+                source_ref = f"{source}, Page {doc['page']}"
             else:
-                source_ref=source
-            formatted_chunks.append(f"Document {i+1}:{source_ref}\n{text}")
+                source_ref = source
+            formatted_chunks.append(f"Document {i}: {source_ref}\n{text}")
         return "\n\n".join(formatted_chunks)
     
 def test_search():
@@ -134,8 +135,13 @@ def test_search():
             for i, result in enumerate(results, 1):
                 score = result.get("relevance_score", 0)
                 source = result.get("source", "Unknown")
-                page = result.get("page", "")
-                page_str = f", Page {page}" if page else ""
+                page = result.get("page")  # FIX: Check if page exists
+                
+                # FIX: Better handling of page display
+                if page:
+                    page_str = f", Page {page}"
+                else:
+                    page_str = ""
                 
                 print(f"{i}. [{source}{page_str}] (Score: {score:.3f})")
                 print(f"   {result['text'][:150]}...\n")
@@ -144,5 +150,3 @@ def test_search():
 
 if __name__ == "__main__":
     test_search()
-            
-        
