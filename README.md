@@ -2,6 +2,8 @@
 
 AI-powered support ticket resolution system using Retrieval-Augmented Generation (RAG) with intelligent escalation logic. Built for domain registrar support teams to automatically resolve common queries and route complex issues to appropriate departments.
 
+**Demo Video:** [Watch Demo](https://youtu.be/w8GHOBFdYLs)
+
 ---
 
 ## Overview
@@ -15,6 +17,145 @@ Knowledge Assistant is a production-ready RAG system designed to automate suppor
 - **Intelligent Escalation**: Routes tickets to abuse, billing, technical, legal, privacy, or security teams based on intent
 - **Structured Output**: Guarantees valid JSON output following strict schema definitions with guardrails
 - **Advanced Retrieval**: Scales efficiently using FAISS vector search combined with Cross-Encoder re-ranking for high precision
+
+---
+
+## Quick Start: How to Run
+
+You can run this application using **Docker** (Recommended for isolation) or **Locally** (Recommended for development).
+
+### Option 1: Docker (Recommended)
+
+#### 1. Configure Environment
+
+Copy the example environment file and add your OpenAI API key:
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and add your API key (and optionally change the model):
+```env
+OPENAI_API_KEY=sk-your-actual-key-here
+OPENAI_MODEL=gpt-4-turbo-preview
+```
+
+#### 2. Build and Run
+```bash
+docker-compose up --build
+```
+
+**Expected Output:**
+```
+[+] Running 3/3
+ ✔ tucows-interview-exercise-ai-api              Built                                                         0.0s 
+ ✔ Network tucows-interview-exercise-ai_default  Created                                                       0.3s 
+ ✔ Container knowledge-assistant-api             Created                                                       0.9s 
+Attaching to knowledge-assistant-api
+knowledge-assistant-api  | INFO:     Started server process [1]
+knowledge-assistant-api  | INFO:     Waiting for application startup.
+knowledge-assistant-api  | INFO:     Application startup complete.                                                  
+knowledge-assistant-api  | INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+```
+
+**Note:** The first start may take 1-2 minutes as the application downloads the embedding models (Sentence-Transformers) in the background. Wait for the "Uvicorn running" log message.
+
+#### 3. Verify Setup
+
+Open your browser and check the stats endpoint:
+
+**http://localhost:8000/stats**
+
+**Expected Response:**
+```json
+{
+  "total_chunks": 157,
+  "total_documents": 7,
+  "document_list": [
+    "MASTER SERVICE AGREEMENT AND DOMAIN REGISTRATION POLICY MANUAL.docx",
+    "OPERATIONAL SUPPORT HANDBOOK AND ESCALATION MATRIX.docx",
+    "billing_faq.txt",
+    "domain_suspension_policy.txt",
+    "escalation_procedures.txt",
+    "technical_support.txt",
+    "whois_requirements.txt"
+  ],
+  "configuration": {
+    "llm_model": "gpt-4-turbo-preview",
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+    "chunk_size": 500,
+    "chunk_overlap": 50,
+    "top_k_retrieve": 10,
+    "top_k_rerank": 5
+  }
+}
+```
+
+If `total_chunks` is 0 or you see an error, run ingestion:
+```bash
+docker-compose exec api python -m src.ingest
+```
+
+#### 4. Test the API
+
+Open Swagger UI in your browser:
+
+**http://localhost:8000/docs**
+
+Test the `POST /resolve-ticket` endpoint with any of the examples below.
+
+---
+
+### Option 2: Local Development
+
+#### 1. Prerequisites
+
+- Python 3.10+
+- OpenAI API Key
+
+#### 2. Setup Virtual Environment
+```bash
+# Create venv
+python -m venv .venv
+
+# Activate venv
+# Windows:
+.venv\Scripts\activate
+# Mac/Linux:
+source .venv/bin/activate
+```
+
+#### 3. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+#### 4. Configure Environment
+
+Copy the example environment file and add your OpenAI API key:
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and add your API key (and optionally change the model):
+```env
+OPENAI_API_KEY=sk-your-actual-key-here
+OPENAI_MODEL=gpt-4-turbo-preview
+```
+
+#### 5. Data Ingestion
+
+Place your `.txt`, `.pdf`, or `.docx` files in `data/docs/` and run the ingestion script to create the vector index:
+```bash
+python -m src.ingest
+```
+
+#### 6. Run the Server
+```bash
+uvicorn src.app:app --reload
+```
+
+Access the interactive API docs at http://localhost:8000/docs
 
 ---
 
@@ -201,145 +342,6 @@ The API accepts a plain-text ticket and returns a structured JSON decision.
 
 ---
 
-## Quick Start: How to Run
-
-You can run this application using **Docker** (Recommended for isolation) or **Locally** (Recommended for development).
-
-### Option 1: Docker (Recommended)
-
-#### 1. Configure Environment
-
-Copy the example environment file and add your OpenAI API key:
-```bash
-cp .env.example .env
-```
-
-Edit `.env` and add your API key:
-```env
-OPENAI_API_KEY=sk-your-actual-key-here
-OPENAI_MODEL=gpt-4-turbo-preview
-```
-
-#### 2. Build and Run
-```bash
-docker-compose up --build
-```
-
-**Expected Output:**
-```
-[+] Running 3/3
- ✔ tucows-interview-exercise-ai-api              Built                                                         0.0s 
- ✔ Network tucows-interview-exercise-ai_default  Created                                                       0.3s 
- ✔ Container knowledge-assistant-api             Created                                                       0.9s 
-Attaching to knowledge-assistant-api
-knowledge-assistant-api  | INFO:     Started server process [1]
-knowledge-assistant-api  | INFO:     Waiting for application startup.
-knowledge-assistant-api  | INFO:     Application startup complete.                                                  
-knowledge-assistant-api  | INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-```
-
-**Note:** The first start may take 1-2 minutes as the application downloads the embedding models (Sentence-Transformers) in the background. Wait for the "Uvicorn running" log message.
-
-#### 3. Verify Setup
-
-Open your browser and check the stats endpoint:
-
-**http://localhost:8000/stats**
-
-**Expected Response:**
-```json
-{
-  "total_chunks": 157,
-  "total_documents": 7,
-  "document_list": [
-    "MASTER SERVICE AGREEMENT AND DOMAIN REGISTRATION POLICY MANUAL.docx",
-    "OPERATIONAL SUPPORT HANDBOOK AND ESCALATION MATRIX.docx",
-    "billing_faq.txt",
-    "domain_suspension_policy.txt",
-    "escalation_procedures.txt",
-    "technical_support.txt",
-    "whois_requirements.txt"
-  ],
-  "configuration": {
-    "llm_model": "gpt-4-turbo-preview",
-    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
-    "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
-    "chunk_size": 500,
-    "chunk_overlap": 50,
-    "top_k_retrieve": 10,
-    "top_k_rerank": 5
-  }
-}
-```
-
-If `total_chunks` is 0 or you see an error, run ingestion:
-```bash
-docker-compose exec api python -m src.ingest
-```
-
-#### 4. Test the API
-
-Open Swagger UI in your browser:
-
-**http://localhost:8000/docs**
-
-Test the `POST /resolve-ticket` endpoint with any of the examples above.
-
----
-
-### Option 2: Local Development
-
-#### 1. Prerequisites
-
-- Python 3.10+
-- OpenAI API Key
-
-#### 2. Setup Virtual Environment
-```bash
-# Create venv
-python -m venv .venv
-
-# Activate venv
-# Windows:
-.venv\Scripts\activate
-# Mac/Linux:
-source .venv/bin/activate
-```
-
-#### 3. Install Dependencies
-```bash
-pip install -r requirements.txt
-```
-
-#### 4. Configuration
-
-Copy the example environment file and add your OpenAI API key:
-```bash
-cp .env.example .env
-```
-
-Edit `.env` and add your API key:
-```env
-OPENAI_API_KEY=sk-your-actual-key-here
-OPENAI_MODEL=gpt-4-turbo-preview
-```
-
-#### 5. Data Ingestion
-
-Place your `.txt`, `.pdf`, or `.docx` files in `data/docs/` and run the ingestion script to create the vector index:
-```bash
-python -m src.ingest
-```
-
-#### 6. Run the Server
-```bash
-uvicorn src.app:app --reload
-```
-
-Access the interactive API docs at http://localhost:8000/docs
-
----
-
 ## Project Details
 
 ### Architecture
@@ -516,7 +518,7 @@ response = llm_service.generate_response(query, context)
 - 50+ transitive dependencies
 
 **Our Approach:**
-- 7 core files, ~870 lines of code
+- 7 core files, clean architecture
 - Direct API calls (no middleware)
 - Full control and transparency
 - Easy to debug and test
@@ -716,13 +718,13 @@ pytest tests/test_integration.py::TestEscalationLogic -v
 │   ├── docs/               # Source documents (PDF/TXT/DOCX)
 │   └── vector_store/       # FAISS index and metadata (auto-generated)
 ├── src/
-│   ├── app.py              # FastAPI entry point (200 lines)
-│   ├── config.py           # Pydantic settings (40 lines)
-│   ├── ingest.py           # Data processing & indexing (180 lines)
-│   ├── llm.py              # OpenAI interface (100 lines)
-│   ├── models.py           # Data schemas (50 lines)
-│   ├── prompts.py          # MCP prompt management (150 lines)
-│   └── rag.py              # Retrieval & Re-ranking (150 lines)
+│   ├── app.py              # FastAPI entry point
+│   ├── config.py           # Pydantic settings
+│   ├── ingest.py           # Data processing & indexing
+│   ├── llm.py              # OpenAI interface
+│   ├── models.py           # Data schemas
+│   ├── prompts.py          # MCP prompt management
+│   └── rag.py              # Retrieval & Re-ranking logic
 ├── tests/                  # Unit and Integration tests
 │   ├── conftest.py         # Test fixtures
 │   ├── test_units.py       # Unit tests (10 tests)
@@ -735,11 +737,11 @@ pytest tests/test_integration.py::TestEscalationLogic -v
 └── README.md               # This file
 ```
 
-**Total Code:** ~870 lines across 7 core modules
-
 ---
 
-## Future Improvements
+## Future Improvements & Known Shortcomings
+
+### Potential Enhancements
 
 1. **Hybrid Search**: Combine FAISS (Dense) with BM25 (Sparse) to better capture keyword-specific queries (e.g., error codes)
 
@@ -753,24 +755,52 @@ pytest tests/test_integration.py::TestEscalationLogic -v
 
 6. **Active Learning**: Collect human feedback to identify documentation gaps and improve responses
 
+### Known Shortcomings
+
+1. **Corrupted PDF Documents**: May produce zero chunks during ingestion
+   - **Impact**: Documents won't be searchable
+   - **Workaround**: Manually verify PDF integrity before ingestion
+   - **Future Fix**: Add PDF validation and repair logic
+
+2. **No Incremental Index Updates**: Requires full index rebuild when documents change
+   - **Impact**: Downtime during re-indexing
+   - **Workaround**: Run ingestion during low-traffic periods
+   - **Future Fix**: Implement incremental FAISS updates
+
+3. **Single-Language Support**: Currently only supports English queries
+   - **Impact**: Non-English queries may produce poor results
+   - **Workaround**: Translate queries manually before submission
+   - **Future Fix**: Add automatic language detection and translation
+
+4. **No Query Deduplication**: Identical queries still call LLM each time
+   - **Impact**: Higher costs and latency for repeated queries
+   - **Workaround**: Implement client-side caching
+   - **Future Fix**: Add Redis-based semantic query cache
+
+5. **Limited Document Format Support**: Only PDF, TXT, DOCX
+   - **Impact**: Other formats (HTML, Markdown, Excel) require manual conversion
+   - **Workaround**: Convert documents to supported formats
+   - **Future Fix**: Add parsers for HTML, MD, XLSX, PPTX
+
+6. **No Multi-tenancy**: Single knowledge base for all users
+   - **Impact**: Cannot isolate documents by customer/department
+   - **Workaround**: Deploy separate instances per tenant
+   - **Future Fix**: Add metadata-based access control
+
 ---
 
 ## Acknowledgments
 
 - Built for Tucows AI Engineer Technical Assessment
-- Developed by Shaheer Khan
+- Developed by Muhammad Shaheer Khan
 - Technologies: FastAPI, OpenAI, FAISS, Sentence-Transformers
-- Development time: ~18 hours over 2 days
 
 ---
 
 ## Contact
 
-**Shaheer Khan**
+**Muhammad Shaheer Khan**
 - GitHub: [@shaheerkhan00](https://github.com/shaheerkhan00)
-
-**Questions or Issues?**
-Open an issue on GitHub or contact via email available on GitHub profile.
 
 ---
 

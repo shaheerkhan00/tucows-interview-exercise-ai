@@ -107,7 +107,6 @@ class RAGService:
             source = doc.get("source","Unknown")
             text = doc.get("text","")
             
-            # FIX: Check for page field (flattened structure)
             if "page" in doc:
                 source_ref = f"{source}, Page {doc['page']}"
             else:
@@ -135,7 +134,7 @@ def test_search():
             for i, result in enumerate(results, 1):
                 score = result.get("relevance_score", 0)
                 source = result.get("source", "Unknown")
-                page = result.get("page")  # FIX: Check if page exists
+                page = result.get("page")  
                 
                 if page:
                     page_str = f", Page {page}"
