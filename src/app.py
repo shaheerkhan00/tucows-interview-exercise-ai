@@ -57,7 +57,7 @@ async def lifespan(app: FastAPI):
 # Create FastAPI app
 app = FastAPI(
     title="Knowledge Assistant API",
-    description="RAG-powered support ticket resolution system with dual LLM support (Groq/OpenAI)",
+    description="RAG-powered support ticket resolution system ",
     version="1.0.0",
     lifespan=lifespan
 )

@@ -6,12 +6,13 @@ class PromptManager:
     MCP-compliant prompt manager for a RAG-based OpenAI application.
     """
 
+    # System behavior contract (single authoritative instruction set)
     SYSTEM_PROMPT = """You are a technical support assistant for a domain registrar company.
 
 Your responsibilities:
 - Answer strictly and only using the provided documents
 - Do not rely on outside knowledge
-- Cite exact document sources
+- Cite exact document sources (filenames)
 - Follow the escalation policy exactly
 - Return ONLY valid JSON matching the required schema
 
@@ -23,6 +24,7 @@ If the documents do not contain the answer, state this explicitly.
 Do not include reasoning or any text outside the JSON response.
 """
 
+    # Deterministic escalation policy (machine-readable)
     ESCALATION_POLICY = {
         "escalate_to_abuse_team": [
             "spam", "phishing", "malware", "abuse", "content violations"
@@ -44,17 +46,12 @@ Do not include reasoning or any text outside the JSON response.
         ]
     }
 
+    # Few-shot examples demonstrating behavior (Formatted as JSON Strings)
     FEW_SHOT_EXAMPLES = [
         {
             "role": "user",
             "content": json.dumps({
-                "documents": [
-                    {
-                        "id": "domain_suspension_policy.txt",
-                        "page": 2,
-                        "content": "Domains are suspended when WHOIS information is missing or invalid. To reactivate, update your WHOIS details within 15 days and contact support."
-                    }
-                ],
+                "context": "Document 1: domain_suspension_policy.txt\nDomains are suspended when WHOIS information is missing or invalid. To reactivate, update your WHOIS details within 15 days and contact support.",
                 "query": "My domain was suspended. How do I fix it?"
             })
         },
@@ -62,7 +59,7 @@ Do not include reasoning or any text outside the JSON response.
             "role": "assistant",
             "content": json.dumps({
                 "answer": "Your domain was likely suspended due to missing or invalid WHOIS information. To reactivate it, update your WHOIS details within 15 days and contact support.",
-                "references": ["domain_suspension_policy.txt, Page 2"],
+                "references": ["domain_suspension_policy.txt"],
                 "action_required": "none"
             })
         }
@@ -75,21 +72,13 @@ Do not include reasoning or any text outside the JSON response.
         The provided context is preserved verbatim and treated as data.
         """
 
-        # Wrap the raw context string into a structured document object
-        documents = [
-            {
-                "id": "context_bundle",
-                "content": context
-            }
-        ]
-
         # Construct the structured payload
         user_payload = {
-            "documents": documents,
+            "context": context,
             "query": query,
             "output_schema": {
                 "answer": "string (2–4 sentences)",
-                "references": "array of document citations",
+                "references": "array of document citations (filenames only)",
                 "action_required": "String. Must be exactly one of: none, escalate_to_abuse_team, escalate_to_billing, escalate_to_technical, escalate_to_legal, escalate_to_privacy, escalate_to_security"
             },
             "escalation_policy": PromptManager.ESCALATION_POLICY

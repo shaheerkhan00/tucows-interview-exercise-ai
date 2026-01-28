@@ -2,14 +2,15 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
+# Install system dependencies (needed for some ML libraries)
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Download ML models at build time (speeds up startup)
-RUN python -c "from sentence_transformers import SentenceTransformer, CrossEncoder; \
-    SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2'); \
-    CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')"
 
 # Copy application code
 COPY . .
